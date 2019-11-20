@@ -9,18 +9,19 @@
 
 - name: Download release package
   get_url:
-    url: https://repo.zabbix.com/zabbix/4.2/ubuntu/pool/main/z/zabbix-release/zabbix-release_4.2-1+bionic_all.deb
-    checksum: sha256:d5675bb3e8ca788bf326f1c98182e138285c2980a86587e9e6fdae9fc8dd2d00
+    url: https://repo.zabbix.com/zabbix/4.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_4.4-1+bionic_all.deb
+    checksum: sha256:ece1e192d4784cd1862ea9ee6d1f2abc513f8aa90db42e3b788996d7aa767bae
     dest: /tmp
 
 - name: Install release package
   apt:
-    deb: /tmp/zabbix-release_4.2-1+bionic_all.deb
+    deb: /tmp/zabbix-release_4.4-1+bionic_all.deb
   become: true
 
 - name: Install zabbix packages
   apt:
     name:
+      - zabbix-apache-conf
       - zabbix-frontend-php
       - zabbix-server-mysql
     update_cache: yes

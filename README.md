@@ -1,6 +1,6 @@
 # zabbix-simple
 
-This is meant to be a quick and simple setup of [zabbix](https://zabbix.com) v4.2 that can be used for testing purposes.
+This is meant to be a quick and simple setup of [zabbix](https://zabbix.com) v4.4 that can be used for testing purposes.
 
 It's assumed that you run it on a Ubuntu 18.04 LTS or CentOS 7 server.
 
