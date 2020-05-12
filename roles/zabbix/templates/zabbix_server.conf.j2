@@ -90,8 +90,6 @@ SocketDir=/var/run/zabbix
 # Default:
 # DBHost=localhost
 
-DBHost=127.0.0.1
-
 ### Option: DBName
 #	Database name.
 #
@@ -102,7 +100,7 @@ DBHost=127.0.0.1
 DBName=zabbix
 
 ### Option: DBSchema
-#	Schema name. Used for IBM DB2 and PostgreSQL.
+#	Schema name. Used for PostgreSQL.
 #
 # Mandatory: no
 # Default:
@@ -124,7 +122,6 @@ DBUser=zabbix-user
 # Mandatory: no
 # Default:
 # DBPassword=
-
 DBPassword={{ password }}
 
 ### Option: DBSocket
@@ -133,8 +130,6 @@ DBPassword={{ password }}
 # Mandatory: no
 # Default:
 # DBSocket=
-
-DBSocket=/var/run/mysqld/mysqld.sock
 
 ### Option: DBPort
 #	Database port when not using local socket.
@@ -540,8 +535,6 @@ ExternalScripts=/usr/lib/zabbix/externalscripts
 # Default:
 # FpingLocation=/usr/sbin/fping
 
-FpingLocation=/usr/bin/fping
-
 ### Option: Fping6Location
 #	Location of fping6.
 #	Make sure that fping6 binary has root ownership and SUID flag set.
@@ -550,8 +543,6 @@ FpingLocation=/usr/bin/fping
 # Mandatory: no
 # Default:
 # Fping6Location=/usr/sbin/fping6
-
-Fping6Location=/usr/bin/fping6
 
 ### Option: SSHKeyLocation
 #	Location of public and private keys for SSH checks and actions.
@@ -742,3 +733,125 @@ StatsAllowedIP=127.0.0.1
 # Mandatory: no
 # Default:
 # TLSKeyFile=
+
+####### For advanced users - TLS ciphersuite selection criteria #######
+
+### Option: TLSCipherCert13
+#	Cipher string for OpenSSL 1.1.1 or newer in TLS 1.3.
+#	Override the default ciphersuite selection criteria for certificate-based encryption.
+#
+# Mandatory: no
+# Default:
+# TLSCipherCert13=
+
+### Option: TLSCipherCert
+#	GnuTLS priority string or OpenSSL (TLS 1.2) cipher string.
+#	Override the default ciphersuite selection criteria for certificate-based encryption.
+#	Example for GnuTLS:
+#		NONE:+VERS-TLS1.2:+ECDHE-RSA:+RSA:+AES-128-GCM:+AES-128-CBC:+AEAD:+SHA256:+SHA1:+CURVE-ALL:+COMP-NULL:+SIGN-ALL:+CTYPE-X.509
+#	Example for OpenSSL:
+#		EECDH+aRSA+AES128:RSA+aRSA+AES128
+#
+# Mandatory: no
+# Default:
+# TLSCipherCert=
+
+### Option: TLSCipherPSK13
+#	Cipher string for OpenSSL 1.1.1 or newer in TLS 1.3.
+#	Override the default ciphersuite selection criteria for PSK-based encryption.
+#	Example:
+#		TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256
+#
+# Mandatory: no
+# Default:
+# TLSCipherPSK13=
+
+### Option: TLSCipherPSK
+#	GnuTLS priority string or OpenSSL (TLS 1.2) cipher string.
+#	Override the default ciphersuite selection criteria for PSK-based encryption.
+#	Example for GnuTLS:
+#		NONE:+VERS-TLS1.2:+ECDHE-PSK:+PSK:+AES-128-GCM:+AES-128-CBC:+AEAD:+SHA256:+SHA1:+CURVE-ALL:+COMP-NULL:+SIGN-ALL
+#	Example for OpenSSL:
+#		kECDHEPSK+AES128:kPSK+AES128
+#
+# Mandatory: no
+# Default:
+# TLSCipherPSK=
+
+### Option: TLSCipherAll13
+#	Cipher string for OpenSSL 1.1.1 or newer in TLS 1.3.
+#	Override the default ciphersuite selection criteria for certificate- and PSK-based encryption.
+#	Example:
+#		TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256
+#
+# Mandatory: no
+# Default:
+# TLSCipherAll13=
+
+### Option: TLSCipherAll
+#	GnuTLS priority string or OpenSSL (TLS 1.2) cipher string.
+#	Override the default ciphersuite selection criteria for certificate- and PSK-based encryption.
+#	Example for GnuTLS:
+#		NONE:+VERS-TLS1.2:+ECDHE-RSA:+RSA:+ECDHE-PSK:+PSK:+AES-128-GCM:+AES-128-CBC:+AEAD:+SHA256:+SHA1:+CURVE-ALL:+COMP-NULL:+SIGN-ALL:+CTYPE-X.509
+#	Example for OpenSSL:
+#		EECDH+aRSA+AES128:RSA+aRSA+AES128:kECDHEPSK+AES128:kPSK+AES128
+#
+# Mandatory: no
+# Default:
+# TLSCipherAll=
+
+### Option: DBTLSConnect
+#	Setting this option enforces to use TLS connection to database.
+#	required    - connect using TLS
+#	verify_ca   - connect using TLS and verify certificate
+#	verify_full - connect using TLS, verify certificate and verify that database identity specified by DBHost
+#	              matches its certificate
+#	On MySQL starting from 5.7.11 and PostgreSQL following values are supported: "required", "verify_ca" and
+#	"verify_full".
+#	On MariaDB starting from version 10.2.6 "required" and "verify_full" values are supported.
+#	Default is not to set any option and behavior depends on database configuration
+#
+# Mandatory: no
+# Default:
+# DBTLSConnect=
+
+### Option: DBTLSCAFile
+#	Full pathname of a file containing the top-level CA(s) certificates for database certificate verification.
+#	Supported only for MySQL and PostgreSQL
+#
+# Mandatory: no
+#	(yes, if DBTLSConnect set to one of: verify_ca, verify_full)
+# Default:
+# DBTLSCAFile=
+
+### Option: DBTLSCertFile
+#	Full pathname of file containing Zabbix server certificate for authenticating to database.
+#	Supported only for MySQL and PostgreSQL
+#
+# Mandatory: no
+# Default:
+# DBTLSCertFile=
+
+### Option: DBTLSKeyFile
+#	Full pathname of file containing the private key for authenticating to database.
+#	Supported only for MySQL and PostgreSQL
+#
+# Mandatory: no
+# Default:
+# DBTLSKeyFile=
+
+### Option: DBTLSCipher
+#	The list of encryption ciphers that Zabbix server permits for TLS protocols up through TLSv1.2
+#	Supported only for MySQL
+#
+# Mandatory no
+# Default:
+# DBTLSCipher=
+
+### Option: DBTLSCipher13
+#	The list of encryption ciphersuites that Zabbix server permits for TLSv1.3 protocol
+#	Supported only for MySQL, starting from version 8.0.16
+#
+# Mandatory no
+# Default:
+# DBTLSCipher13=

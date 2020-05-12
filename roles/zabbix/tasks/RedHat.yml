@@ -1,13 +1,5 @@
 ---
 
-- name: Install EPEL
-  yum:
-    name:
-      - epel-release
-    state: present
-    update_cache: yes
-  become: true
-
 - name: Install mariadb package
   yum:
     name:
@@ -25,14 +17,28 @@
 
 - name: Download release package
   get_url:
-    url: https://repo.zabbix.com/zabbix/4.4/rhel/7/x86_64/zabbix-release-4.4-1.el7.noarch.rpm
-    checksum: sha256:842e7b25be804047b7713c453fb023edee514356ab06fea4ed9481055dd94cee
+    url: https://repo.zabbix.com/zabbix/5.0/rhel/8/x86_64/zabbix-release-5.0-1.el8.noarch.rpm
+    checksum: sha256:e48bf4c39144eb0747cafc5f23a0ed77ece5fc7cf8caae2b0976363fa2c23763
     dest: /tmp
 
 - name: Install release package
   yum:
-    name: /tmp/zabbix-release-4.4-1.el7.noarch.rpm
+    name: /tmp/zabbix-release-5.0-1.el8.noarch.rpm
     state: present
+  become: true
+
+- name: Install Apache
+  yum:
+    name:
+      - httpd
+    update_cache: yes
+  become: true
+
+- name: Install fping
+  yum:
+    name:
+      - fping
+    update_cache: yes
   become: true
 
 - name: Install zabbix packages
@@ -40,14 +46,15 @@
     name:
       - zabbix-web-mysql
       - zabbix-server-mysql
+      - zabbix-apache-conf
     update_cache: yes
   become: true
 
 - name: Fix PHP timezone
   replace:
-    path: /etc/httpd/conf.d/zabbix.conf
-    regexp: '(\s+)# php_value date.timezone Europe/Riga'
-    replace: '\1php_value date.timezone Europe/Oslo'
+    path: /etc/php-fpm.d/zabbix.conf
+    regexp: '(\s+); php_value[date.timezone] = Europe/Riga'
+    replace: '\1php_value[date.timezone] = Europe/Oslo'
   become: true
   register: php_timezone
 
@@ -61,7 +68,7 @@
 - name: Install python MySQL modules
   yum:
     name:
-      - MySQL-python
+      - python3-PyMySQL
     state: present
   become: true
 
@@ -82,7 +89,7 @@
 
 - name: Fill zabbix database
   when: create_database.changed
-  shell: zcat /usr/share/doc/zabbix-server-mysql-*/create.sql.gz | mysql zabbix
+  shell: zcat /usr/share/doc/zabbix-server-mysql/create.sql.gz | mysql zabbix
   become: true
   register: fill_database
 
@@ -149,9 +156,8 @@
   become: true
 
 - name: Install pyzabbix
-  yum:
-    name: python-pyzabbix
-    state: present
+  pip:
+    name: pyzabbix
   become: true
 
 - name: Copy post init script
@@ -161,4 +167,4 @@
   
 - name: Run post init script
   when: fill_database.changed
-  command: /usr/bin/python2 /tmp/post-init.py
+  command: /usr/bin/python3 /tmp/post-init.py
