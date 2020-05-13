@@ -1,21 +1,21 @@
 ---
 
-- name: Install mysql package
+- name: Install mariadb package
   apt:
     name:
-      - mysql-server
+      - mariadb-server
     update_cache: yes
   become: true
 
 - name: Download release package
   get_url:
-    url: https://repo.zabbix.com/zabbix/4.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_4.4-1+bionic_all.deb
-    checksum: sha256:ece1e192d4784cd1862ea9ee6d1f2abc513f8aa90db42e3b788996d7aa767bae
+    url: https://repo.zabbix.com/zabbix/5.0/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.0-1+focal_all.deb
+    checksum: sha256:744a808bc273039150e57d55a8ce07e461a173b314df3391c7f6627ac7543b43
     dest: /tmp
 
 - name: Install release package
   apt:
-    deb: /tmp/zabbix-release_4.4-1+bionic_all.deb
+    deb: /tmp/zabbix-release_5.0-1+focal_all.deb
   become: true
 
 - name: Install zabbix packages
@@ -51,6 +51,7 @@
 - name: Create zabbix database
   mysql_db:
     name: zabbix
+    collation: utf8_bin
     state: present
   become: true
   register: create_database
