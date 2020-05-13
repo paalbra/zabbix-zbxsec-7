@@ -1,15 +1,22 @@
 # zabbix-simple
 
-This is meant to be a quick and simple setup of [zabbix](https://zabbix.com) v4.2 that can be used for testing purposes.
+This is meant to be a quick and simple setup of [zabbix](https://zabbix.com) v5.0 that can be used for testing purposes.
 
-It's assumed that you run it on a Ubuntu 18.04 LTS server.
+It's assumed that you run it on a Ubuntu 20.04 LTS or CentOS 8 server.
 
 ## Prerequirements
 
 Install pip and ansible.
 
+### Ubuntu
+
 ```
-sudo apt install python3-pip && sudo pip3 install ansible
+sudo apt install -y python3-pip ansible
+```
+
+### CentOS
+```
+sudo dnf install -y epel-release && sudo dnf install -y ansible
 ```
 
 ## Install zabbix

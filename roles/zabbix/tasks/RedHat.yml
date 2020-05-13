@@ -1,0 +1,170 @@
+---
+
+- name: Install mariadb package
+  yum:
+    name:
+      - mariadb-server
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Enable and start mariadb
+  service:
+    name: mariadb
+    enabled: yes
+    state: started
+  become: true
+
+- name: Download release package
+  get_url:
+    url: https://repo.zabbix.com/zabbix/5.0/rhel/8/x86_64/zabbix-release-5.0-1.el8.noarch.rpm
+    checksum: sha256:e48bf4c39144eb0747cafc5f23a0ed77ece5fc7cf8caae2b0976363fa2c23763
+    dest: /tmp
+
+- name: Install release package
+  yum:
+    name: /tmp/zabbix-release-5.0-1.el8.noarch.rpm
+    state: present
+  become: true
+
+- name: Install Apache
+  yum:
+    name:
+      - httpd
+    update_cache: yes
+  become: true
+
+- name: Install fping
+  yum:
+    name:
+      - fping
+    update_cache: yes
+  become: true
+
+- name: Install zabbix packages
+  yum:
+    name:
+      - zabbix-web-mysql
+      - zabbix-server-mysql
+      - zabbix-apache-conf
+    update_cache: yes
+  become: true
+
+- name: Fix PHP timezone
+  replace:
+    path: /etc/php-fpm.d/zabbix.conf
+    regexp: '(\s+); php_value[date.timezone] = Europe/Riga'
+    replace: '\1php_value[date.timezone] = Europe/Oslo'
+  become: true
+  register: php_timezone
+
+- name: Reload httpd
+  when: php_timezone.changed
+  service:
+    name: httpd
+    state: reloaded
+  become: true
+
+- name: Install python MySQL modules
+  yum:
+    name:
+      - python3-PyMySQL
+    state: present
+  become: true
+
+- name: Create zabbix database
+  mysql_db:
+    name: zabbix
+    state: present
+  become: true
+  register: create_database
+
+- name: Create zabbix database user
+  mysql_user:
+    name: zabbix-user
+    password: "{{ password }}"
+    priv: 'zabbix.*:ALL'
+    state: present
+  become: true
+
+- name: Fill zabbix database
+  when: create_database.changed
+  shell: zcat /usr/share/doc/zabbix-server-mysql/create.sql.gz | mysql zabbix
+  become: true
+  register: fill_database
+
+- name: Copy zabbix web config
+  template:
+    src: zabbix.conf.php.j2
+    dest: /etc/zabbix/web/zabbix.conf.php
+  become: true
+
+- name: Copy zabbix server config
+  template:
+    src: zabbix_server.conf.j2
+    dest: /etc/zabbix/zabbix_server.conf
+  become: true
+
+- name: Set seboolean zabbix_can_network
+  seboolean:
+    name: zabbix_can_network
+    persistent: yes
+    state: yes
+  become: true
+
+- name: Set seboolean httpd_can_network_connect
+  seboolean:
+    name: httpd_can_network_connect
+    persistent: yes
+    state: yes
+  become: true
+
+- name: Set seboolean daemons_enable_cluster_mode
+  seboolean:
+    name: daemons_enable_cluster_mode
+    persistent: yes
+    state: yes
+  become: true
+
+- name: Copy SELinux my-zabbix
+  copy:
+    src: my-zabbix.te
+    dest: /tmp/my-zabbix.te
+
+- name: Compile SELinux my-zabbix
+  command: /usr/bin/checkmodule -M -m -o /tmp/my-zabbix.mod /tmp/my-zabbix.te
+
+- name: Create SELinux my-zabbix policy package
+  command: /usr/bin/semodule_package -o /tmp/my-zabbix.pp -m /tmp/my-zabbix.mod
+
+- name: Install SELinux my-zabbix module
+  command: /usr/sbin/semodule -i /tmp/my-zabbix.pp
+  become: true
+
+- name: Enable zabbix-server
+  service:
+    name: zabbix-server
+    enabled: yes
+    state: started
+  become: true
+
+- name: Enable and start httpd
+  service:
+    name: httpd
+    enabled: yes
+    state: started
+  become: true
+
+- name: Install pyzabbix
+  pip:
+    name: pyzabbix
+  become: true
+
+- name: Copy post init script
+  template:
+    src: post-init.py.j2
+    dest: /tmp/post-init.py
+  
+- name: Run post init script
+  when: fill_database.changed
+  command: /usr/bin/python3 /tmp/post-init.py

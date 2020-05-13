@@ -63,9 +63,9 @@ def update_stuff():
 
 zapi = pyzabbix.ZabbixAPI("http://localhost/zabbix")
 try:
-    zapi.login("admin", "zabbix")
+    zapi.login("Admin", "zabbix")
 except: 
-    zapi.login("admin", "{{ password }}")
+    zapi.login("Admin", "{{ password }}")
 
 print("Connected to Zabbix API Version {}".format(zapi.api_version()))
 
