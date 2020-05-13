@@ -534,6 +534,9 @@ ExternalScripts=/usr/lib/zabbix/externalscripts
 # Mandatory: no
 # Default:
 # FpingLocation=/usr/sbin/fping
+{% if ansible_os_family == "Debian" %}
+FpingLocation=/usr/bin/fping
+{% endif %}
 
 ### Option: Fping6Location
 #	Location of fping6.
@@ -543,6 +546,9 @@ ExternalScripts=/usr/lib/zabbix/externalscripts
 # Mandatory: no
 # Default:
 # Fping6Location=/usr/sbin/fping6
+{% if ansible_os_family == "Debian" %}
+Fping6Location=/usr/bin/fping6
+{% endif %}
 
 ### Option: SSHKeyLocation
 #	Location of public and private keys for SSH checks and actions.
