@@ -26,6 +26,7 @@ Run the ansible playbook to install zabbix. Change the password to something els
 Add the `-K` parameter if you need to provide sudo password.
 
 ```
+cd ansible
 ansible-playbook playbook.yml -e password=something
 ```
 
