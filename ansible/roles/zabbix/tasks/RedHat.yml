@@ -154,17 +154,3 @@
     enabled: yes
     state: started
   become: true
-
-- name: Install pyzabbix
-  pip:
-    name: pyzabbix
-  become: true
-
-- name: Copy post init script
-  template:
-    src: post-init.py.j2
-    dest: /tmp/post-init.py
-  
-- name: Run post init script
-  when: fill_database.changed
-  command: /usr/bin/python3 /tmp/post-init.py
