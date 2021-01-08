@@ -2,7 +2,7 @@
 
 This is meant to be a quick and simple setup of [zabbix](https://zabbix.com) v5.0 that can be used for testing purposes.
 
-It's assumed that you run it on a Ubuntu 20.04 LTS or CentOS 8 server.
+It's assumed that you run it on a Ubuntu 20.10 or CentOS 8 server.
 
 ## Containers
 
