@@ -1,6 +1,9 @@
 #!/usr/bin/python3
-import pyzabbix
+import argparse
+import getpass
 import time
+
+import pyzabbix
 
 def delete_stuff():
     for script in zapi.script.get():
@@ -51,24 +54,39 @@ def delete_stuff():
             # Can't delete internal usergroups or only/last usergroup of user
             print("ERROR", str(e))
 
-def create_stuff():
+def create_stuff(version, new_password):
     groupid = zapi.hostgroup.create(name="Hostgroup")["groupids"][0]
     zapi.host.create(host="Host", groups=[{"groupid": groupid}], interfaces=[{"type": 1, "main": 1, "useip": 1, "ip": "127.0.0.1", "dns": "", "port": 10050}])
     usergroupid = zapi.usergroup.create(name="Usergroup", rights=[{"permission": 3, "id": groupid}])["usrgrpids"][0]
-    userid = zapi.user.create(alias="User", passwd="{{ password }}", type=2, usrgrps=[{"usrgrpid": usergroupid}])["userids"][0]
-
-def update_stuff():
+    if version >= (5,2,0):
+        userid = zapi.user.create(alias="User", passwd=new_password, roleid=2, usrgrps=[{"usrgrpid": usergroupid}])["userids"][0]
+    else:
+        userid = zapi.user.create(alias="User", passwd=new_password, type=2, usrgrps=[{"usrgrpid": usergroupid}])["userids"][0]
+def update_stuff(new_password):
     userid = zapi.user.get(filter={"alias": "Admin"})[0]["userid"]
-    zapi.user.update(userid=userid, passwd="{{ password }}")
+    zapi.user.update(userid=userid, passwd=new_password)
 
-zapi = pyzabbix.ZabbixAPI("http://localhost/zabbix")
-try:
-    zapi.login("Admin", "zabbix")
-except: 
-    zapi.login("Admin", "{{ password }}")
 
-print("Connected to Zabbix API Version {}".format(zapi.api_version()))
 
-delete_stuff()
-create_stuff()
-update_stuff()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("url")
+    parser.add_argument("username")
+    parser.add_argument("--password")
+    parser.add_argument("--new-password")
+    args = parser.parse_args()
+
+    if args.password is None:
+        args.password = getpass.getpass("Current password: ")
+    if args.new_password is None:
+        args.new_password = getpass.getpass("New password: ")
+
+    zapi = pyzabbix.ZabbixAPI(args.url)
+    zapi.login(args.username, args.password)
+    version_string = zapi.api_version()
+    version = tuple(map(int, version_string.split(".")))
+    print("Connected to Zabbix API Version {}".format(version_string))
+
+    delete_stuff()
+    create_stuff(version, args.new_password)
+    update_stuff(args.new_password)
