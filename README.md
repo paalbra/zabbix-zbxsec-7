@@ -2,36 +2,45 @@
 
 This is meant to be a quick and simple setup of [zabbix](https://zabbix.com) v5.0 that can be used for testing purposes.
 
-It's assumed that you run it on a Ubuntu 20.04 LTS or CentOS 8 server.
+It's assumed that you run it on a Ubuntu 20.10 or CentOS 8 server.
 
 ## Prerequirements
 
-Install pip and ansible.
+We're going to use [podman](https://podman.io/getting-started/).
 
 ### Ubuntu
 
 ```
-sudo apt install -y python3-pip ansible
+sudo apt install -y python3-pip podman
+# Depending on the package you might be missing a dependency. Install runc
+sudo apt install runc
+pip3 install --user pyzabbix
 ```
 
 ### CentOS
 ```
-sudo dnf install -y epel-release && sudo dnf install -y ansible
+sudo dnf install -y podman
+pip3 install --user pyzabbix
 ```
 
-## Install zabbix
+## Create zabbix/create pod
 
-Run the ansible playbook to install zabbix. Change the password to something else. The password is used for the database and zabbix users.
-
-Add the `-K` parameter if you need to provide sudo password.
+Change the password to something else. The password is used for the database.
 
 ```
-ansible-playbook playbook.yml -e password=something
+ZABBIX_PASSWORD=something envsubst < zabbix.yaml.tmpl > zabbix.yaml
+podman play kube zabbix.yaml
+```
+
+Run post-init. This will change the default password in Zabbix.
+
+```
+python3 post-init.py http://localhost:8080 Admin --password zabbix --new-password something-secret
 ```
 
 ## Connect
 
-http://localhost/zabbix
+http://localhost:8080 (you could use a Nginx proxy in front of this).
 
 There are three enabled users:
 
@@ -39,10 +48,3 @@ There are three enabled users:
 * User: "Zabbix Admin". Password is the one set above
 * Guest: "Zabbix User". The normal guest user without password
 
-## Quick flush of zabbix application
-
-Drop the database and run the ansible playbook once more.
-
-```
-echo "DROP DATABASE zabbix;" | sudo mysql
-```
