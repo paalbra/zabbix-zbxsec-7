@@ -1,9 +1,0 @@
----
-
-- name: "Install with Debian"
-  include_tasks: "Debian.yml"
-  when: ansible_os_family == "Debian"
-
-- name: "Install with RedHat"
-  include_tasks: "RedHat.yml"
-  when: ansible_os_family == "RedHat"

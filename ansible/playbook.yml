@@ -1,8 +1,0 @@
----
-
-- name: Zabbix
-  hosts: localhost
-  connection: local
-  roles:
-    - role: zabbix
-
