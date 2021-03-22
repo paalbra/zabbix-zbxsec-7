@@ -1,0 +1,3 @@
+[submodule "zabbix-simple"]
+	path = zabbix-simple
+	url = https://github.com/paalbra/zabbix-simple
