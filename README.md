@@ -29,6 +29,8 @@ The issue is confirmed present in the following versions of Zabbix:
 
 In 5.4 they've [changed the way scripts are managed](https://www.zabbix.com/documentation/current/en/manual/installation/upgrade_notes_540#central-location-for-scripts). You need to be granted access to the Administration-\>Scripts UI element. This issue is from here on only a problem if you do not fully trust users with this access. This is hopefully very unlikely.
 
+This issue was just seen as "misconfiguration" by the Zabbix team, even though PoC is able to quite easily destroy the application in their own container images.
+
 ## Zabbix test instance
 
 A test instance of Zabbix could be created with the "zabbix-simple" git submodule. It uses [podman](https://podman.io/getting-started/) and the [container images from zabbix](https://hub.docker.com/u/zabbix).
