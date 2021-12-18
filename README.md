@@ -26,7 +26,7 @@ A test instance of Zabbix could be created with the "zabbix-simple" git submodul
 
 You should clone this repository with the `--recurse-submodules` argument or use `git submodule update --init` after a simple clone.
 
-Follow the instructions in <./zabbix-simple/README.md>.
+Follow the instructions in `./zabbix-simple/README.md`.
 
 ## Proof-of-concept
 
