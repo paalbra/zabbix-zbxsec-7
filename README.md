@@ -20,7 +20,14 @@ Short history:
 * On Desember 10th, 2020, the Zabbix team was informed that after 90 days the issue could be posted publicly.
 * The registered issue has had little activity. It was closed (and resolution set as "fixed") on Jan 29th, 2021.
 
-The issue is still present (in all common new versions?) of Zabbix.
+The issue is confirmed present in the following versions of Zabbix:
+
+* 4.0
+* 4.2
+* 4.4
+* 5.0
+
+In 5.4 they've [changed the way scripts are managed](https://www.zabbix.com/documentation/current/en/manual/installation/upgrade_notes_540#central-location-for-scripts). You need to be granted access to the Administration-\>Scripts UI element. This issue is from here on only a problem if you do not fully trust users with this access. This is hopefully very unlikely.
 
 ## Zabbix test instance
 
