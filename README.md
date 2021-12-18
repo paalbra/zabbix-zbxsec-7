@@ -22,10 +22,10 @@ Short history:
 
 The issue is confirmed present in the following versions of Zabbix:
 
-* 4.0
+* 4.0 LTS
 * 4.2
 * 4.4
-* 5.0
+* 5.0 LTS
 
 In 5.4 they've [changed the way scripts are managed](https://www.zabbix.com/documentation/current/en/manual/installation/upgrade_notes_540#central-location-for-scripts). You need to be granted access to the Administration-\>Scripts UI element. This issue is from here on only a problem if you do not fully trust users with this access. This is hopefully very unlikely.
 
