@@ -49,8 +49,9 @@ if __name__ == "__main__":
     print("Connected to Zabbix API Version {}".format(zapi.api_version()))
 
     try:
+        hostid = zapi.host.get(filter={"host": "Host"})[0]["hostid"]
         print("Creating item: Example item")
-        zapi.item.create(name="Example item", key_="icmpping[]", hostid=1, type=3, interfaceid=1, value_type=0, delay="30s")
+        zapi.item.create(name="Example item", key_="icmpping[]", hostid=hostid, type=3, interfaceid=1, value_type=0, delay="30s")
 
         print("Creating action: Evil action")
         action = zapi.action.create(name="Evil action", status=1, eventsource=0, esc_period="1h", operations=[{"operationtype": 1, "opcommand": {"type": 0, "execute_on": 1, "command": evil_command}, "opcommand_hst": [{"hostid": "0"}]}])
