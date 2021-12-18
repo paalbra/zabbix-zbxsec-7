@@ -1,5 +1,7 @@
 # Zbxsec-7
 
+## About
+
 This repository contains a proof-of-concept of a security issue in [Zabbix](https://zabbix.com).
 
 Any user with the "Zabbix Admin" role is able to run custom shell script on the application server in the context of the application user. The impact of this will vary, depending on OS, Zabbix version and how/which users are granted the "Zabbix Admin" role, but the users will probably have full database access and access to other secrets stored on the application server.
