@@ -19,6 +19,7 @@ Short history:
 * It was registered as https://support.zabbix.com/browse/ZBXSEC-7 on August 23rd, 2019.
 * On Desember 10th, 2020, the Zabbix team was informed that after 90 days the issue could be posted publicly.
 * The registered issue has had little activity. It was closed (and resolution set as "fixed") on Jan 29th, 2021.
+* On Jan 27th, 2022, this was given CVE-ID [CVE-2021-46088](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-46088).
 
 The issue is confirmed present in the following versions of Zabbix:
 
