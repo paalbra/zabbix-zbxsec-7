@@ -20,6 +20,7 @@ Short history:
 * On Desember 10th, 2020, the Zabbix team was informed that after 90 days the issue could be posted publicly.
 * The registered issue has had little activity. It was closed (and resolution set as "fixed") on Jan 29th, 2021.
 * On Jan 27th, 2022, this was given CVE-ID [CVE-2021-46088](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-46088).
+* The issue has not been resolved.
 
 The issue is confirmed present in the following versions of Zabbix:
 
