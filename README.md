@@ -29,7 +29,7 @@ The issue is confirmed present in the following versions of Zabbix:
 * 4.4
 * 5.0 LTS
 
-In 5.4 they've [changed the way scripts are managed](https://www.zabbix.com/documentation/current/en/manual/installation/upgrade_notes_540#central-location-for-scripts). You need to be granted access to the Administration-\>Scripts UI element. The normal Admin role does not have this access out of the box after 5.4. You may however create roles with this access and should be aware of the implication. The Super Admin role still has the ability to create custom scripts out of the box, and has the ability to damage the application-server.
+In 5.4 they've [changed the way scripts are managed](https://www.zabbix.com/documentation/5.4/en/manual/installation/upgrade_notes_540#central-location-for-scripts). You need to be granted access to the Administration-\>Scripts UI element. The normal Admin role does not have this access out of the box after 5.4. You may however create roles with this access and should be aware of the implication. The Super Admin role still has the ability to create custom scripts out of the box, and has the ability to damage the application-server.
 
 This issue was just seen as "misconfiguration" by the Zabbix team, even though PoC is able to quite easily destroy the application in their own container images.
 
