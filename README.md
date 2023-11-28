@@ -10,8 +10,8 @@ The issue is a "feature" that gives the "Zabbix Admin" role the ability to creat
 
 Links:
 
-* https://www.zabbix.com/documentation/current/manual/web_interface/frontend_sections/configuration/actions
-* https://www.zabbix.com/documentation/current/manual/config/notifications/action/operation/remote_command
+* https://www.zabbix.com/documentation/5.0/manual/web_interface/frontend_sections/configuration/actions
+* https://www.zabbix.com/documentation/5.0/manual/config/notifications/action/operation/remote_command
 
 Short history:
 
